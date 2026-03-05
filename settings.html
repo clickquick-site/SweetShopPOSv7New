@@ -219,11 +219,34 @@
           <label class="toggle-switch"><input type="checkbox" id="touchKeyboard"/><div class="toggle-track"><div class="toggle-thumb"></div></div></label>
         </div>
 
+        <!-- ── نسبة الفائدة على الديون ── -->
+        <div class="setting-row" style="flex-wrap:wrap;gap:10px;">
+          <div>
+            <div class="setting-label">💹 نسبة الفائدة على الديون</div>
+            <div class="setting-desc">تُطبَّق عند إضافة فائدة يدوياً على دين — 0 = لا فائدة</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <input class="input-field" type="number" id="debtInterestRate"
+              min="0" max="100" step="0.5" placeholder="0"
+              style="width:90px;text-align:center;font-size:1rem;font-weight:700;"/>
+            <span style="font-weight:700;color:var(--primary-light);">%</span>
+          </div>
+        </div>
+        <div class="setting-row" style="flex-wrap:wrap;gap:10px;">
+          <div>
+            <div class="setting-label">📅 نوع الفائدة الافتراضي</div>
+            <div class="setting-desc">يومية = تُحسب لكل يوم انقضى / شهرية = مبلغ ثابت كل شهر</div>
+          </div>
+          <select class="select-field" id="debtInterestType" style="width:200px;">
+            <option value="daily">📆 يومية (× عدد الأيام)</option>
+            <option value="monthly">🗓️ شهرية (× عدد الأشهر)</option>
+            <option value="fixed">🔒 مبلغ ثابت لكل دين</option>
+          </select>
+        </div>
+
         <button class="btn btn-success mt-3" onclick="saveSettings('program')" data-i18n="saveBtn">💾 حفظ البيانات</button>
       </div>
     </div>
-
-    <!-- ═══ TAB: المتجر ═══ -->
     <div class="tab-content" id="tab-store">
       <div class="card">
         <div class="setting-row" style="flex-direction:column;align-items:flex-start;gap:12px;">
@@ -1353,7 +1376,8 @@ async function loadAllSettings() {
     'barcodeType','barcodeFont','autoBackup',
     'notifEnabled','notifExpiry','notifLowStock','notifDebt30','notifStorage',
     'notifOutStock','notifTechError','notifLogin','notifPwdChange',
-    'notifInApp','notifSMS','notifEmail'
+    'notifInApp','notifSMS','notifEmail',
+    'debtInterestRate','debtInterestType'
   ];
   for (const key of keys) {
     try {
@@ -1433,6 +1457,9 @@ async function saveSettings(section) {
     await setSetting('barcodeReader', document.getElementById('barcodeReader').checked ? '1':'0');
     await setSetting('barcodeAuto',   document.getElementById('barcodeAuto').checked ? '1':'0');
     await setSetting('touchKeyboard', document.getElementById('touchKeyboard').checked ? '1':'0');
+    // نسبة الفائدة على الديون
+    await setSetting('debtInterestRate', document.getElementById('debtInterestRate')?.value || '0');
+    await setSetting('debtInterestType', document.getElementById('debtInterestType')?.value || 'daily');
     applyTranslation(lang);
     applyFontPreview(font);
     // Apply new dual-attribute theme system
