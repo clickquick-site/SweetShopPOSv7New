@@ -456,7 +456,7 @@ table.items {
 }
 table.items thead tr { border-bottom: 2px solid #000; }
 table.items th { font-weight: 900; padding: 3px 1px; text-align: right; font-size: 9.5pt; }
-table.items td { padding: 3px 1px; font-weight: 800; vertical-align: top; overflow: hidden; word-break: break-word; }
+table.items td { padding: 3px 1px; font-weight: 800; vertical-align: middle; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 table.items tbody tr + tr { border-top: 1px dashed #999; }
 .cn { width: 34%; text-align: right; }
 .cq { width:  9%; text-align: center; }
@@ -470,11 +470,9 @@ table.items tbody tr + tr { border-top: 1px dashed #999; }
         + '<style>' + css + '</style>'
         + '</head><body>';
 
-  // ── الرأس: رقم الفاتورة | التاريخ + الساعة ──
-  H += '<div class="row2 hdr">'
-     + '<span class="r">' + lbl + '</span>'
-     + '<span class="l">' + dateStr + ' ' + timeStr + '</span>'
-     + '</div>';
+  // ── الرأس: رقم الفاتورة في سطر — التاريخ + الساعة في سطر منفصل ──
+  H += '<div class="hdr" style="text-align:right;font-weight:900;margin:2px 0;">' + lbl + '</div>'
+     + '<div class="hdr" style="text-align:left;direction:ltr;font-weight:800;margin:2px 0;">' + dateStr + '  ' + timeStr + '</div>';
 
   // البائع
   if (printedBy)
@@ -506,6 +504,13 @@ table.items tbody tr + tr { border-top: 1px dashed #999; }
   }
 
   // ── جدول المنتجات ──
+  // إصلاح 3: إذا كانت فاتورة تسديد وitems فارغة نعرض صف المبلغ المدفوع تلقائياً
+  const displayItems = (items && items.length > 0)
+    ? items
+    : (sale.debtSettlement
+        ? [{ productName: sale.partialSettlement ? 'تسديد جزئي' : 'تسديد دين', quantity: 1, unitPrice: parseFloat(sale.paid||sale.total||0), total: parseFloat(sale.paid||sale.total||0) }]
+        : []);
+
   H += '<table class="items"><thead><tr>'
      + '<th class="cn">المنتج</th>'
      + '<th class="cq">ك</th>'
@@ -513,8 +518,9 @@ table.items tbody tr + tr { border-top: 1px dashed #999; }
      + '<th class="ct">المجموع</th>'
      + '</tr></thead><tbody>';
 
-  items.forEach(function(item) {
-    const maxL = is58 ? 10 : 13;
+  displayItems.forEach(function(item) {
+    // إصلاح 2: زيادة maxL لعرض الاسم كاملاً — الاقتطاع فقط عند الضرورة القصوى
+    const maxL = is58 ? 12 : 16;
     const nm   = (item.productName||'—').length > maxL
                  ? (item.productName||'—').slice(0, maxL-1) + '\u2026'
                  : (item.productName||'—');
