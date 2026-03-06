@@ -398,7 +398,7 @@ async function printInvoice(sale, items) {
   // bodyW = pageW − (5mm × 2) = منطقة الكتابة الآمنة
   // ═══════════════════════════════════════════════════════
   const pageW = is58 ? '58mm' : '80mm';
-  const marg  = is58 ? '4mm'  : '5mm';   // هامش آمن كل جانب
+  const marg  = is58 ? '2mm'  : '2mm';   // هامش آمن كل جانب
   // أعمدة الجدول بنسب % (لا mm) لتتكيف مع أي عرض
   // مجموعها 100%: cn=34, cq=9, cp=24, ct=33
 
@@ -407,7 +407,7 @@ async function printInvoice(sale, items) {
 * { margin:0; padding:0; box-sizing:border-box; }
 html, body {
   font-family: 'Courier New', Courier, monospace;
-  font-size: 12pt;
+  font-size: 10.5pt;
   font-weight: 800;
   color: #000;
   background: #fff;
@@ -423,25 +423,25 @@ html, body {
   align-items: baseline;
   width: 100%;
   margin: 2.5px 0;
-  font-size: 12pt;
+  font-size: 10.5pt;
   font-weight: 800;
 }
 .row2 .r { text-align: right; white-space: nowrap; }
 .row2 .l { text-align: left;  direction: ltr; white-space: nowrap; }
 /* الرأس */
-.hdr { font-size: 12pt; font-weight: 900; }
+.hdr { font-size: 10.5pt; font-weight: 900; }
 /* الإجمالي */
-.total { font-size: 15pt; font-weight: 900; margin: 3px 0; }
+.total { font-size: 13pt; font-weight: 900; margin: 3px 0; }
 /* المدفوع */
-.paid  { font-size: 12.5pt; font-weight: 800; }
+.paid  { font-size: 11pt; font-weight: 800; }
 /* وسط */
 .ctr { text-align: center; display: block; }
 /* اسم المتجر */
-.store { font-size: 16pt; font-weight: 900; letter-spacing: 0.5px; margin: 4px 0; }
+.store { font-size: 14pt; font-weight: 900; letter-spacing: 0.5px; margin: 4px 0; }
 /* رسالة الترحيب */
-.welcome { font-size: 13pt; font-weight: 900; margin: 5px 0 3px; }
+.welcome { font-size: 11.5pt; font-weight: 900; margin: 5px 0 3px; }
 /* باركود */
-.barcode { font-size: 10pt; font-weight: 700; letter-spacing: 4px; margin: 3px 0; }
+.barcode { font-size: 9pt; font-weight: 700; letter-spacing: 4px; margin: 3px 0; }
 /* فواصل */
 .line-d { border-top: 2px solid #000; margin: 4px 0; }
 .line-s { border-top: 1px dashed #000; margin: 4px 0; }
@@ -450,12 +450,12 @@ table.items {
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  font-size: 11.5pt;
+  font-size: 10pt;
   font-weight: 800;
   margin: 3px 0;
 }
 table.items thead tr { border-bottom: 2px solid #000; }
-table.items th { font-weight: 900; padding: 3px 1px; text-align: right; font-size: 11pt; }
+table.items th { font-weight: 900; padding: 3px 1px; text-align: right; font-size: 9.5pt; }
 table.items td { padding: 3px 1px; font-weight: 800; vertical-align: top; overflow: hidden; word-break: break-word; }
 table.items tbody tr + tr { border-top: 1px dashed #999; }
 .cn { width: 34%; text-align: right; }
@@ -491,9 +491,9 @@ table.items tbody tr + tr { border-top: 1px dashed #999; }
   if (pName==='1' && sName)
     H += '<div class="ctr store">'+sName+'</div>';
   if (pPhone==='1' && sPhone)
-    H += '<div class="ctr" style="font-size:11pt;font-weight:800;margin:2px 0;">'+sPhone+'</div>';
+    H += '<div class="ctr" style="font-size:9.5pt;font-weight:800;margin:2px 0;">'+sPhone+'</div>';
   if (pAddr==='1' && sAddr)
-    H += '<div class="ctr" style="font-size:10.5pt;font-weight:700;margin:2px 0;">'+sAddr+'</div>';
+    H += '<div class="ctr" style="font-size:9pt;font-weight:700;margin:2px 0;">'+sAddr+'</div>';
   if ((pLogo==='1'&&sLogo)||(pName==='1'&&sName)||(pPhone==='1'&&sPhone)||(pAddr==='1'&&sAddr))
     H += '<div class="line-d"></div>';
 
