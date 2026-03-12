@@ -269,9 +269,9 @@
 
     .cart-header {
       display: grid;
-      grid-template-columns: 2fr 80px 100px 80px 120px 100px 100px 50px;
+      grid-template-columns: 2fr 90px 80px 100px 80px 120px 100px 100px 50px;
       gap: 10px;
-      padding: 12px 15px;
+      padding: 7px 15px;
       background: var(--bg-dark);
       border-bottom: 3px solid var(--primary);
       color: var(--text-secondary);
@@ -289,7 +289,7 @@
 
     .cart-item {
       display: grid;
-      grid-template-columns: 2fr 80px 100px 80px 120px 100px 100px 50px;
+      grid-template-columns: 2fr 90px 80px 100px 80px 120px 100px 100px 50px;
       gap: 10px;
       padding: 12px 15px;
       border-bottom: 1px solid var(--border);
@@ -604,20 +604,14 @@
       margin-right: auto;
     }
 
-    /* شريط F6 فوق رأس السلة */
-    .cart-toolbar {
-      display: flex;
-      justify-content: flex-end;
-      padding: 6px 15px 0;
-      background: var(--bg-dark);
+    /* عناصر الميزان المدمجة داخل الشريط الموحد */
+    .scale-inline {
+      display: none;
+      align-items: center;
+      gap: 8px;
     }
-
-    .f6-toolbar-btn {
-      background: rgba(34,211,238,0.1);
-      color: #22D3EE;
-      border-color: #22D3EE;
-      padding: 5px 12px;
-      font-size: 0.8rem;
+    .scale-inline.visible {
+      display: flex;
     }
 
 
@@ -896,16 +890,16 @@
     </div>
     
     <!-- شريط الميزان (مخفي افتراضياً) -->
-    <!-- منطقة السلة (مع زر طارئ F6 في الأعلى) -->
+    <!-- منطقة السلة (F6 داخل رأس السلة كعمود) -->
     <div class="cart-area">
-      <div class="cart-toolbar">
-        <button class="debt-btn f6-toolbar-btn" onclick="openF6Modal()">
-          <span style="background:rgba(255,255,255,0.2); padding:2px 6px; border-radius:4px; font-family:monospace;">F6</span>
-          <i class="fa-solid fa-bolt"></i> طارئ
-        </button>
-      </div>
       <div class="cart-header">
         <span>العائلة / المنتج</span>
+        <span style="text-align:center;">
+          <button class="debt-btn" onclick="openF6Modal()" style="background:rgba(34,211,238,0.1); color:#22D3EE; border:1px solid #22D3EE; padding:3px 8px; font-size:0.75rem; border-radius:6px;">
+            <span style="font-family:monospace; font-size:0.7rem;">F6</span>
+            <i class="fa-solid fa-bolt"></i> طارئ
+          </button>
+        </span>
         <span style="text-align:center; white-space:nowrap;">الحجم / الوحدة</span>
         <span style="text-align:center;">سعر الشراء</span>
         <span style="text-align:center;">المخزون</span>
@@ -919,7 +913,7 @@
       </div>
     </div>
     
-    <!-- الشريط الموحد: صنف + زبون + ديون + الإجمالي -->
+    <!-- الشريط الموحد: صنف + زبون + ديون + ميزان (مخفي) + الإجمالي -->
     <div class="unified-bar">
       <span class="items-count" id="itemsCount">0 صنف</span>
       
@@ -933,7 +927,25 @@
         <i class="fa-solid fa-magnifying-glass-dollar"></i> ديون
       </button>
       
-      <!-- حقول مخفية — ضرورية للكود (partialPayment / clearCart / resumeHeldSale) -->
+      <!-- الميزان الإلكتروني — مدمج، مخفي افتراضياً -->
+      <div class="scale-inline" id="scaleBar">
+        <div class="scale-status">
+          <div class="scale-dot" id="scaleDot"></div>
+          <span id="scaleStatusText">غير متصل</span>
+        </div>
+        <div class="scale-weight" id="scaleWeightDisplay">0.000 <small>كغ</small></div>
+        <input type="number" class="scale-price" id="scalePrice" 
+               placeholder="سعر/كغ" min="0" step="0.01"/>
+        <span id="scaleTotal" style="font-weight:700; color:var(--primary-light);">0.00</span>
+        <button class="btn btn-sm btn-primary" onclick="addScaleItem()">
+          <i class="fa-solid fa-scale-balanced"></i> إضافة
+        </button>
+        <button class="btn btn-sm btn-secondary" onclick="toggleScale()" id="scaleConnectBtn">
+          <i class="fa-solid fa-plug"></i> اتصال
+        </button>
+      </div>
+      
+      <!-- حقول مخفية — ضرورية للكود -->
       <input type="number" id="paidInput" style="display:none;" value="0" min="0" step="0.01"/>
       <input type="number" id="discountInput" style="display:none;" value="0" min="0" step="0.01"/>
       
@@ -942,24 +954,6 @@
         <span class="total-amount" id="totalAmount">0.00 DA</span>
         <span class="discount-badge" id="discountBadge"></span>
       </div>
-    </div>
-    
-    <!-- شريط الميزان (يظهر فقط عند الاتصال — بعد ديون) -->
-    <div class="scale-bar" id="scaleBar">
-      <div class="scale-status">
-        <div class="scale-dot" id="scaleDot"></div>
-        <span id="scaleStatusText">غير متصل</span>
-      </div>
-      <div class="scale-weight" id="scaleWeightDisplay">0.000 <small>كغ</small></div>
-      <input type="number" class="scale-price" id="scalePrice" 
-             placeholder="سعر/كغ" min="0" step="0.01"/>
-      <span id="scaleTotal" style="font-weight:700; color:var(--primary-light);">0.00</span>
-      <button class="btn btn-sm btn-primary" onclick="addScaleItem()">
-        <i class="fa-solid fa-scale-balanced"></i> إضافة
-      </button>
-      <button class="btn btn-sm btn-secondary" onclick="toggleScale()" id="scaleConnectBtn">
-        <i class="fa-solid fa-plug"></i> اتصال
-      </button>
     </div>
     
     <!-- أزرار الإجراءات -->
@@ -1286,6 +1280,8 @@ function renderCart() {
           ${item.familyName ? `<span class="product-family">${window.sanitizer.escape(item.familyName)}</span>` : ''}
           <span class="product-name">${window.sanitizer.escape(item.name)}</span>
         </div>
+        
+        <div></div>
         
         <div style="text-align:center; color:var(--text-secondary);">
           ${item.size ? window.sanitizer.escape(item.size) + (item.unit ? ' ' + window.sanitizer.escape(item.unit) : '') : (item.unit ? window.sanitizer.escape(item.unit) : '—')}
